@@ -1,0 +1,33 @@
+predicate sorted(a:array<int>, min:int, max:int)
+    requires a != null
+    requires 0 <= min <= max <= a.Length 
+    reads a
+{
+    forall i,j | min <= i < j < max :: a[i] <= a[j] 
+}
+
+method test(a:array<int>,i:int)
+    requires a!=null 
+    requires a.Length>i
+    requires i>0
+    requires sorted(a,0,i-1)
+    requires a[i-1]<a[i]
+    ensures sorted(a,0,i)
+{
+    
+}
+
+method using_test_proves_false()
+{
+  var a := new int[3];
+  a[0] := 8;
+  a[1] := 7;
+  a[2] := 9;
+  assert sorted(a, 0, 1);
+  assert a[0] > a[1];
+  assert !sorted(a, 0, 2);
+  assert a[1] < a[2];
+  test(a, 2);
+  assert sorted(a, 0, 2);
+  assert false;
+}
